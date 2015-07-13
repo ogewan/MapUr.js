@@ -13,13 +13,17 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
         mU = function(){
             var css = document.createElement("LINK"),
                 jcl = document.createElement("SCRIPT"),
-                tbr = document.createElement("UL");
+                tbr = document.createElement("UL"),
+                frm = document.createElement("IFRAME");
             css.rel="stylesheet";
             css.href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css";
             document.head.appendChild(css);
             tbr.innerHTML='<li style="display:block;"><div class="fa fa-paint-brush" style="display:inline;"></div> <input class="color" style="height:100%;width:50%" onchange="document.getElementsByTagName('+"'canvas'"+')[0].setAttribute('+"'style'"+','+"'background-color: #'"+'+this.color.toString())"></li><li style="display:block;"><input style="display:inline;" type="file" id="input" size="10" accept=".js,.css,.html,.htm"></li>';
             tbr.setAttribute("style","padding: 0px;margin:0px;position: fixed; top: 5%; left: 5%; width: 15%; height: auto;");
             document.body.appendChild(tbr);
+            frm.setAttribute("id","lab");
+            frm.setAttribute("style","padding: 0px;margin:0px;position: fixed; bottom: 5%; right: 5%; width: 35%; height: auto;");
+            document.body.appendChild(frm);
             var g = new Goo({
                 fullscreen: true,
                 container: document.body,
@@ -56,6 +60,9 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
             reader.onloadend = function(e) {
                 var text = reader.result;
                 console.log(text);
+                var virtualtask = document.createElement("SCRIPT");
+                virtualtask.innerHTML = text;
+                document.getElementById("lab").contentWindow.document.head.appendChild(virtualtask);
                 g.onDraw = function(g){
                     var cnv = g.canvas;
                     var ctx = g.ctx;
