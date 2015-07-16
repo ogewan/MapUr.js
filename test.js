@@ -5,5 +5,6 @@
         p.innerHTML = "My World";
         document.body.appendChild(p);
     }
-   void(window.addEventListener ? window.addEventListener("load", test, !1) : window.attachEvent ? window.attachEvent("onload", test) : window.onload = test);
+    test()
+   //void(window.addEventListener ? window.addEventListener("load", test, !1) : window.attachEvent ? window.attachEvent("onload", test) : window.onload = test);
 }());

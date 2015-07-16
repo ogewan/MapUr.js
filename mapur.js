@@ -60,6 +60,7 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
             reader.onloadend = function(e) {
                 var text = reader.result;
                 console.log(text);
+                //console.log(eval(text))
                 var virtualtask = document.createElement("SCRIPT");
                 virtualtask.innerHTML = text;
                 document.getElementById("lab").contentWindow.document.head.appendChild(virtualtask);
