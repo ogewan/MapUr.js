@@ -2,7 +2,22 @@
 /**
 * @suppress {globalThis}
 */
+(function(open) {
+  XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+      // Do some magic
+      console.log("OUTER: getting http");
+      //open.call(this, method, url, async, user, pass);
+  };
+})(XMLHttpRequest.prototype.open);
 !function(){
+    //console.log(window.XMLHttpRequest);
+    //window.XMLHttpRequest = function XMLHttpRequest(){return 0};
+    //console.log(XMLHttpRequest);
+    /*XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+        //overites native XMLHttpRequest
+        
+        open.call(this, method, url, async, user, pass);
+    };*/
     var Goo=function(e){function h(){if(a.fullscreen){var b=window.innerWidth,c=window.innerHeight;a.canvas.width!=b&&(a.canvas.width=b);a.canvas.height!=c&&(a.canvas.height=c)}b=k();if(a.onDraw)a.onDraw(a,b);if(a.animate){if(60<f++){a.fps=1E3*(f/(b-l));if(a.onFrameRate)a.onFrameRate(a);f=0;l=b}m(h)}}var a=this;a.type="2d";a.animate=!0;a.fullscreen=!1;a.keysDown={};a.userData={};if(e)for(var g in e)e.hasOwnProperty(g)&&(a[g]=e[g]);a.canvas=document.createElement("canvas");a.canvas&&(a.ctx=a.canvas.getContext(a.type));
 if(!a.canvas||!a.ctx&&a.onFailure)a.onFailure();else{a.canvas.width=a.width;a.canvas.height=a.height;a.__defineGetter__&&a.__defineSetter__?(a.__defineGetter__("width",function(){return a.canvas.width}),a.__defineSetter__("width",function(b){a.canvas.width=b}),a.__defineGetter__("height",function(){return a.canvas.height}),a.__defineSetter__("height",function(b){a.canvas.height=b})):Object.defineProperty&&(Object.defineProperty(a,"width",{get:function(){return a.canvas.width},set:function(b){a.canvas.width=
 b}}),Object.defineProperty(a,"height",{get:function(){return a.canvas.height},set:function(b){a.canvas.height=b}}));a.fullscreen&&(a.container=document.body,document.body.style.margin="0px",document.body.style.padding="0px",document.body.style.overflow="hidden");a.container&&a.container.appendChild(a.canvas);var m=function(){var a=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame;a||(a=function(a){window.setTimeout(a,
@@ -15,6 +30,14 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
                 jcl = document.createElement("SCRIPT"),
                 tbr = document.createElement("UL"),
                 frm = document.createElement("IFRAME");
+            /*!function(){
+                console.log(frm,frm.contentWindow);
+                var window_ = frm.contentWindow;
+                preserve={};
+                for (var name in window_) {
+                    preserve[name]=window_[name];
+                }
+            }();*/
             css.rel="stylesheet";
             css.href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css";
             document.head.appendChild(css);
@@ -73,6 +96,7 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
                     ctx.textAlign = "center";
                     ctx.fillText(text,0,0);
                 }
+                mUobj.meths._update();
             }
             reader.onerror = function(e){
                 var err = reader.error;
@@ -117,6 +141,42 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
             g.canvas.addEventListener("dragenter", dragenter, false);
             g.canvas.addEventListener("dragover", dragover, false);
             g.canvas.addEventListener("drop", drop, false);
+            !function(){
+                var window_ = document.getElementById("lab").contentWindow;
+                (function(open) {
+                    window_.XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+                        // Do some magic
+                        console.log("INNER: getting http");
+                        open.call(this, method, url, async, user, pass);
+                    };
+                })(window_.XMLHttpRequest.prototype.open);
+                window.onerror = window_.onerror = function(err,urel,num,col,e){
+                    alert(e.type);
+                    console.log(e.type,e.target);
+                    return e.type;
+                };
+                preserve={};
+                for (var name in window_) {
+                    preserve[name]=window_[name];
+                }
+            }();
+            mUobj = {
+                meths: {
+                    _update: function(){
+                        var window_ = document.getElementById("lab").contentWindow;
+                        for (var name in window_) {
+                            if (!mUobj.props.hasOwnProperty(name)&&!preserve.hasOwnProperty(name)) {
+                                mUobj.props[name]=(name!="mUobj")?window_[name]:{};
+                            }
+                        }
+                        //window_.XMLHttpRequest.prototype.onreadystatechange = 
+                        //window_.XMLHttpRequest.__proto__.onreadystatechange = 
+                        return mUobj;
+                    }
+                }, props: {}
+            };
+            //mUobj._update();
+            //console.log("mUobj",mUobj,"preserve",preserve,"win",document.getElementById("lab").contentWindow);
         };
     void(window.addEventListener ? window.addEventListener("load", mU, !1) : window.attachEvent ? window.attachEvent("onload", mU) : window.onload = mU);
 }();
