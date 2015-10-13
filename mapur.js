@@ -82,7 +82,7 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
             var reader = new FileReader();
             reader.onloadend = function(e) {
                 var text = reader.result;
-                console.log(text);
+                //console.log(text);
                 //console.log(eval(text))
                 var virtualtask = document.createElement("SCRIPT");
                 virtualtask.innerHTML = text;
@@ -151,16 +151,24 @@ a.key=String.fromCharCode(a.keyCode);delete a.keysDown[a.keyCode];if(a.onKeyUp)a
                     };
                 })(window_.XMLHttpRequest.prototype.open);
                 window.onerror = window_.onerror = function(err,urel,num,col,e){
-                    alert(e.type);
-                    console.log(e.type,e.target);
-                    return e.type;
+                    //alert(e.type);
+                    console.log("ONERROR",e.type);//,e.target);
+                    //return e.type;
                 };
+                window.addEventListener('error', function(e) {
+                    console.log("ONERROR",e.type);
+                }, true);
+                //a.b = 0;
+                document.getElementById("lab").addEventListener('error', function(e) {
+                    console.log("I am Error",e.type);
+                }, true);
                 preserve={};
                 for (var name in window_) {
                     preserve[name]=window_[name];
                 }
             }();
             mUobj = {
+                _window: document.getElementById("lab").contentWindow,
                 meths: {
                     _update: function(){
                         var window_ = document.getElementById("lab").contentWindow;
