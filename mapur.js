@@ -1,4 +1,4 @@
-/** @preserve mapur.js (c) 2015 Oluwaseun Ogedengbe, MIT| Goo: github.com/johnrobinsn/goo.js (MIT) (c) 2013 John Robinson*/
+/** @preserve mapur.js (c) 2015 Oluwaseun Ogedengbe, MIT*/
 /**
 * @suppress {globalThis}
 */
@@ -35,21 +35,111 @@
         css.href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css";
         document.head.appendChild(css);
         tbr.innerHTML='<li style="display:block;"><div class="fa fa-paint-brush" style="display:inline;"></div> <input class="color" style="height:100%;width:50%" onchange="document.getElementsByTagName('+"'canvas'"+')[0].setAttribute('+"'style'"+','+"'background-color: #'"+'+this.color.toString())"></li><li style="display:block;"><input style="display:inline;" type="file" id="input" size="10" accept=".js,.css,.html,.htm"></li>';
-        tbr.setAttribute("style","padding: 0px;margin:0px;position: fixed; top: 5%; left: 5%; width: 15%; height: auto;");
+        tbr.
+        setAttribute("style","padding: 0px;margin:0px;position: fixed; top: 5%; left: 5%; width: 15%; height: auto;");
         document.body.appendChild(tbr);
         frm.setAttribute("id","lab");
         frm.setAttribute("style","padding: 0px;margin:0px;position: fixed; bottom: 5%; right: 5%; width: 35%; height: auto;");
         document.body.appendChild(frm);
         
+        var Jsf = function() {
+            this.sts = []; 
+        }
+        var Ftn = function() {
+            this.pms = [];
+            this.sts = [];
+        }
+        var Cif = function() {
+            this.if = [];
+            this.e1 = [];
+            this.e_ = [];
+        }
+        var Csw = function() {
+            this.c1 = [];
+            this.c2 = [];
+            this.d_ = [];
+        }
+        var Cfr = function() {
+            this.head = {
+                init: '',
+                cond: '',
+                iter: ''
+            };
+            this.sts = [];
+        }
+        var Cwh = function() {
+            this.cond = '';
+            this.sts = [];
+        }
+        
+        var parse = function(f,z,c) {
+            //clean+split
+            if(c==true){                
+                var work = f;
+            } else {
+                z = 0;
+                //var work = f.replace(/ /g,'');
+                var work = f.replace(/{/g,'\n{\n');
+                work = work.replace(/}/g,'\n}\n');
+                work = work.replace(/ /g,'');
+                console.log(work)
+                work = work.split("\n");
+            }
+            var test = [];
+            var nugg = '';
+            var itertrk = 0;
+            var nugtar = 0;
+            var thing;
+            var res;
+            for(i = z; i < work.length; i++){
+                nugg = work[i];//.replace(/ /g,'');
+                //console.log(nugg,nugg.indexOf("//"))
+                if(nugg.indexOf("\/\/")==0)
+                    continue;
+                nugg = nugg.split('"');
+                nugtar = Math.ceil(nugg.length/2)
+                while(nugtar<nugg.length){//get rid of strings
+                    nugg.splice(1+itertrk, 1);
+                    itertrk++;
+                }
+                itertrk=0;
+                nugg = nugg.join('');
+                //console.log(nugg)
+                if(nugg.indexOf("function")+1){
+                    thing = new Ftn();
+                    thing.pms = nugg.slice(nugg.indexOf('(',nugg.indexOf("function"))+1,nugg.indexOf(')'),nugg.indexOf('(',nugg.indexOf("function"))).split(",");
+                    res = parse(work,i+1,true);
+                    //console.log(res,res[1])
+                    thing.sts = res[0];
+                    i = res[1];
+                    test.push(thing)
+                } else if(nugg.indexOf("}")+1) {
+                    break;
+                } else {
+                    test.push(nugg)
+                }
+                //console.log(nugg)
+            }
+            //console.log(jsfile)
+            if(c!=true){
+                var temp = test;
+                test = new Jsf();
+                test.sts = temp;
+            }
+            //console.log((test,i),test,i)
+            return [test,i];//(test,i);
+        }
         var reader = new FileReader();
         reader.onloadend = function(e) {
             var text = reader.result;
             //console.log(text);
             //console.log(eval(text))
+            var parsed = parse(text);
+            console.log(parsed[0])
             var virtualtask = document.createElement("SCRIPT");
             virtualtask.innerHTML = text;
             document.getElementById("lab").contentWindow.document.head.appendChild(virtualtask);
-            g.onDraw = function(g){
+            /*g.onDraw = function(g){
                 var cnv = g.canvas;
                 var ctx = g.ctx;
                 ctx.clearRect(0, 0, g.width, g.height);
@@ -57,12 +147,12 @@
                 ctx.fillStyle = "blue";
                 ctx.textAlign = "center";
                 ctx.fillText(text,0,0);
-            }
+            }*/
             mUobj.meths._update();
         }
         reader.onerror = function(e){
             var err = reader.error;
-            g.onDraw = function(g){
+            /*g.onDraw = function(g){
                 var cnv = g.canvas;
                 var ctx = g.ctx;
                 ctx.clearRect(0, 0, g.width, g.height);
@@ -70,19 +160,19 @@
                 ctx.fillStyle = "red";
                 ctx.textAlign = "center";
                 ctx.fillText(err,0,0);
-            }
+            }*/
         }
         function handleFiles(direct) {
             var file = (this.files!==void 0)?this.files[0]:direct;
             //console.log(file,direct,this.files)
-            g.onDraw = function(g){
+            /*g.onDraw = function(g){
                 var cnv = g.canvas;
                 var ctx = g.ctx;
                 ctx.clearRect(0, 0, g.width, g.height);
                 ctx.font = "30px Arial";
                 ctx.textAlign = "center";
                 ctx.fillText(file.name+","+file.size+","+file.type,cnv.width/2, cnv.height/2);
-            }
+            }*/
             console.log(file)
             reader.readAsText(file);
         }
@@ -100,9 +190,9 @@
             handleFiles(e.dataTransfer.files[0]);
         }
         document.getElementById("input").addEventListener("change", handleFiles, false);
-        g.canvas.addEventListener("dragenter", dragenter, false);
+        /*g.canvas.addEventListener("dragenter", dragenter, false);
         g.canvas.addEventListener("dragover", dragover, false);
-        g.canvas.addEventListener("drop", drop, false);
+        g.canvas.addEventListener("drop", drop, false);*/
         !function(){
             var window_ = document.getElementById("lab").contentWindow;
             (function(open) {
